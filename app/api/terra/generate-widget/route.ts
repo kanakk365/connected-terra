@@ -39,8 +39,11 @@ export async function POST() {
     }
 
     return NextResponse.json({ url: data.url, session_id: data.session_id });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Internal API error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }

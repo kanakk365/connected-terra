@@ -33,11 +33,13 @@ export default function Sidebar() {
         const data = await res.json();
         const users = data.users || [];
         setDevices(
-          users.map((u: any) => ({
-            userId: u.user_id,
-            provider: u.provider,
-            active: u.active,
-          })),
+          users.map(
+            (u: { user_id: string; provider: string; active: boolean }) => ({
+              userId: u.user_id,
+              provider: u.provider,
+              active: u.active,
+            }),
+          ),
         );
       } catch {
         // Silently fail – sidebar should still render

@@ -150,7 +150,15 @@ export default function DevicePage() {
         const usersRes = await fetch("/api/terra/users");
         const usersJson = await usersRes.json();
         const users = usersJson.users || [];
-        const found = users.find((u: any) => u.user_id === userId);
+        const found = users.find(
+          (u: {
+            user_id: string;
+            provider: string;
+            active: boolean;
+            reference_id?: string;
+            last_webhook_update?: string;
+          }) => u.user_id === userId,
+        );
         if (found) {
           setDevice({
             userId: found.user_id,
@@ -341,9 +349,11 @@ export default function DevicePage() {
               .map((b) => ({ date: b.date, weight: b.weight! })),
           );
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching device data:", err);
-        setError(err.message || "Failed to load device data");
+        setError(
+          err instanceof Error ? err.message : "Failed to load device data",
+        );
       } finally {
         setLoading(false);
       }

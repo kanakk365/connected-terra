@@ -146,8 +146,8 @@ export default function HealthCharts() {
       } else {
         throw new Error("No URL returned from Terra widget");
       }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     }
   };
 
@@ -161,7 +161,13 @@ export default function HealthCharts() {
         // 1. Fetch all connected Terra users (devices)
         const usersRes = await fetch("/api/terra/users");
         const usersJson = await usersRes.json();
-        const users: any[] = usersJson.users || [];
+        const users: Array<{
+          user_id: string;
+          provider: string;
+          active: boolean;
+          reference_id: string;
+          last_webhook_update: string;
+        }> = usersJson.users || [];
 
         const connectedDevices: ConnectedDevice[] = users.map((u) => ({
           userId: u.user_id,
@@ -367,9 +373,9 @@ export default function HealthCharts() {
               .map((b) => ({ date: b.date, weight: b.weight! })),
           );
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching Terra data:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
