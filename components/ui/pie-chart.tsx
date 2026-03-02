@@ -18,13 +18,6 @@ import {
 
 export const description = "A sleep data donut chart";
 
-const sampleChartData = [
-  { name: "Deep Sleep", value: 2.5, fill: "#6366f1" },
-  { name: "Light Sleep", value: 3.2, fill: "#ec4899" },
-  { name: "REM Sleep", value: 1.1, fill: "#8b5cf6" },
-  { name: "Awake", value: 0.5, fill: "#a78bfa" },
-];
-
 const chartConfig = {
   deepSleep: {
     label: "Deep Sleep",
@@ -47,7 +40,7 @@ const chartConfig = {
 type SleepSlice = { name: string; value: number; fill: string };
 
 export function ChartPieDonut({ data }: { data?: SleepSlice[] }) {
-  const used = data && data.length ? data : sampleChartData;
+  const used = data && data.length ? data : [];
   const totalSleep = used.reduce((sum, item) => sum + item.value, 0);
 
   return (
@@ -98,17 +91,20 @@ export function ChartPieDonut({ data }: { data?: SleepSlice[] }) {
           {/* Legend on the right */}
           <div className="flex flex-row w-[40%] lg:flex-col justify-start lg:justify-center flex-wrap gap-4 lg:gap-6 ">
             {used.map((item) => (
-              <div key={item.name} className="flex items-center justify-between gap-2 lg:gap-3">
+              <div
+                key={item.name}
+                className="flex items-center justify-between gap-2 lg:gap-3"
+              >
                 <div className="flex items-center gap-2">
-                <div
-                  className="w-7 h-7 rounded shrink-0"
-                  style={{ backgroundColor: item.fill }}
-                />
-                <div>
-                  <p className="text-xs lg:text-sm font-medium text-gray-200 whitespace-nowrap">
-                    {item.name}
-                  </p>
-                </div>
+                  <div
+                    className="w-7 h-7 rounded shrink-0"
+                    style={{ backgroundColor: item.fill }}
+                  />
+                  <div>
+                    <p className="text-xs lg:text-sm font-medium text-gray-200 whitespace-nowrap">
+                      {item.name}
+                    </p>
+                  </div>
                 </div>
                 <p className="text-xs text-gray-400">{item.value}hrs</p>
               </div>

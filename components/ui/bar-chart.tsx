@@ -1,5 +1,5 @@
-"use client"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+"use client";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -7,34 +7,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "A bar chart with steps data"
-
-const sampleChartData = [
-  { day: "Mon", steps: 2400 },
-  { day: "Tue", steps: 3200 },
-  { day: "Wed", steps: 2800 },
-  { day: "Thu", steps: 3600 },
-  { day: "Fri", steps: 4200 },
-  { day: "Sat", steps: 3800 },
-  { day: "Sun", steps: 3100 },
-]
+export const description = "A bar chart with steps data";
 
 const chartConfig = {
   steps: {
     label: "Steps",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-type StepsPoint = { day: string; steps: number }
+type StepsPoint = { day: string; steps: number };
 
 export function ChartBarDefault({ data }: { data?: StepsPoint[] }) {
   return (
@@ -45,7 +35,7 @@ export function ChartBarDefault({ data }: { data?: StepsPoint[] }) {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={data && data.length ? data : sampleChartData}>
+          <BarChart accessibilityLayer data={data && data.length ? data : []}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
@@ -53,11 +43,7 @@ export function ChartBarDefault({ data }: { data?: StepsPoint[] }) {
               tickMargin={10}
               axisLine={false}
             />
-            <YAxis
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
+            <YAxis tickLine={false} tickMargin={10} axisLine={false} />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
@@ -67,5 +53,5 @@ export function ChartBarDefault({ data }: { data?: StepsPoint[] }) {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

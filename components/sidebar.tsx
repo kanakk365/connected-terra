@@ -6,18 +6,45 @@ import {
   FileText,
   ComponentIcon as ImageIconComponent,
   Activity,
-  Heart,
   Menu,
   Settings,
   HelpCircle,
+  Smartphone,
 } from "lucide-react";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
+
+interface ConnectedDevice {
+  userId: string;
+  provider: string;
+  active: boolean;
+}
 
 export default function Sidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [devices, setDevices] = useState<ConnectedDevice[]>([]);
+
+  useEffect(() => {
+    async function fetchDevices() {
+      try {
+        const res = await fetch("/api/terra/users");
+        const data = await res.json();
+        const users = data.users || [];
+        setDevices(
+          users.map((u: any) => ({
+            userId: u.user_id,
+            provider: u.provider,
+            active: u.active,
+          })),
+        );
+      } catch {
+        // Silently fail – sidebar should still render
+      }
+    }
+    fetchDevices();
+  }, []);
 
   function handleNavigation() {
     setIsMobileMenuOpen(false);
@@ -88,13 +115,34 @@ export default function Sidebar() {
               <NavItem href="/sensors" icon={Activity}>
                 Sensors
               </NavItem>
-              <NavItem href="/withings" icon={Heart}>
-                Withings
-              </NavItem>
-              <NavItem href="/dashboard/polar" icon={Activity}>
-                Polar
-              </NavItem>
             </div>
+
+            {/* Connected Devices Section */}
+            {devices.length > 0 && (
+              <div className="mt-6">
+                <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Connected Devices
+                </p>
+                <div className="space-y-1">
+                  {devices.map((d) => (
+                    <Link
+                      key={d.userId}
+                      href={`/dashboard/device/${d.userId}`}
+                      onClick={handleNavigation}
+                      className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent"
+                    >
+                      <Smartphone className="h-4 w-4 mr-3 flex-shrink-0" />
+                      <span className="flex items-center gap-2">
+                        {d.provider}
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${d.active ? "bg-green-500" : "bg-red-500"}`}
+                        />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="px-4 py-4 border-t border-border">
             <div className="space-y-1">
